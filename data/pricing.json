@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "priceType": "list",
+    "source": "Microsoft Dynamics 365 Licensing Guide + microsoft.com regional pricing pages"
+  },
+  "defaultCurrency": "gbp",
+  "currencies": {
+    "gbp": {
+      "code": "GBP",
+      "label": "UK list price (ex VAT)",
+      "verified": null
+    },
+    "usd": {
+      "code": "USD",
+      "label": "Global list price",
+      "verified": null
+    }
+  },
+  "apps": {
+    "sales": {
+      "name": "Sales",
+      "pro": {
+        "label": "Sales Professional",
+        "price": {
+          "usd": 65,
+          "gbp": 50.0
+        }
+      },
+      "ent": {
+        "label": "Sales Enterprise",
+        "price": {
+          "usd": 105,
+          "gbp": 80.7
+        }
+      }
+    },
+    "cs": {
+      "name": "Customer Service",
+      "pro": {
+        "label": "Customer Service Professional",
+        "price": {
+          "usd": 50,
+          "gbp": 38.4
+        }
+      },
+      "ent": {
+        "label": "Customer Service Enterprise",
+        "price": {
+          "usd": 105,
+          "gbp": 80.7
+        }
+      }
+    },
+    "fs": {
+      "name": "Field Service",
+      "ent": {
+        "label": "Field Service",
+        "price": {
+          "usd": 105,
+          "gbp": 80.7
+        }
+      }
+    }
+  },
+  "teamMemberPrice": {
+    "usd": 8,
+    "gbp": 6.2
+  },
+  "attachPrice": {
+    "usd": 20,
+    "gbp": 15.4
+  }
+}

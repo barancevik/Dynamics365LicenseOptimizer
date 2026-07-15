@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A free, client-side calculator that finds the cheapest legitimate Microsoft Dynamics 365 license mix for your team. No sign-up, no data collection.">
+<title>D365 License Optimizer</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="brand"><span class="name">D365 License Optimizer</span></div>
+    <div class="nav-links" role="tablist">
+      <button data-page="home" class="active">Home</button>
+      <button data-page="calc">Calculator</button>
+      <button data-page="guide">License Guide</button>
+      <button data-page="prices">Pricing Data</button>
+      <button data-page="about">About</button>
+    </div>
+    <div class="cur-toggle" role="group" aria-label="Currency">
+      <button data-cur="gbp" onclick="setCurrency('gbp')">UK £</button>
+      <button data-cur="usd" onclick="setCurrency('usd')">Global $</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section class="page visible" id="page-home">
+
+  <div class="hero-wrap">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+    <div class="hero">
+      <div class="eyebrow">Dynamics 365 + Power Platform</div>
+      <h1>Find the right license the money-saving way. No more digging through a 60-page guide.</h1>
+      <p class="lead">Which user needs which license? Is Team Member enough? When does an attach actually make sense? We read Microsoft's licensing guide so you don't have to, and turned it into code. Describe your team and get the lowest-cost legitimate license mix. Built UK-first: GBP list prices by default, USD one click away.</p>
+      <div class="hero-cta">
+        <button class="btn btn-ghost" onclick="goTo('guide')">Browse the license guide</button>
+        <button class="btn btn-primary" onclick="goTo('calc')">Start calculating</button>
+      </div>
+
+      <!-- The cost of getting it wrong: right under the CTA -->
+      <div class="row2">
+        <div class="visual-frame vf-green">
+          <div class="loss-mock">
+            <div class="lm-cap">The cost of getting licensing wrong</div>
+            <div class="lm-num"><span id="loss-over"></span><span style="font-size:16px;color:var(--ink-soft)">/yr</span></div>
+            <div class="lm-sub">What a 33-user company overpays every year when everyone gets a full license</div>
+            <div class="lm-div"></div>
+            <div class="lm-cap">With the right mix</div>
+            <div class="lm-num gain"><span id="loss-right"></span>/yr</div>
+            <div class="lm-sub">Instead of <span id="loss-instead"></span>. Same access, same permissions, smaller invoice.</div>
+          </div>
+        </div>
+        <div class="r-txt">
+          <div class="eyebrow">See the damage first</div>
+          <h2>If you don't know you're overpaying, you'll keep overpaying</h2>
+          <p>In most enterprise D365 setups, a good share of users only read data, check reports or approve records. Buying full licenses for those users is the single most common source of overspending.</p>
+          <p>The tool shows you the cost of the default approach first, a full license for everyone, then puts the cheapest rule-compliant mix right next to it. The gap between the two is your money.</p>
+        </div>
+      </div>
+
+      <!-- Windows-style browser mockup -->
+      <div class="shot" aria-hidden="true">
+        <div class="winframe">
+          <div class="tabstrip">
+            <div class="tab"><span class="fav"></span> D365 License Optimizer <span class="x">✕</span></div>
+            <div class="newtab">+</div>
+            <div class="winbtns"><span>─</span><span>▢</span><span class="close">✕</span></div>
+          </div>
+          <div class="toolbar">
+            <span class="tb-ic">←</span><span class="tb-ic" style="opacity:.4">→</span><span class="tb-ic">⟳</span>
+            <div class="urlbar"><span class="lock">🔒</span> d365licenseoptimizer.com/calculator</div>
+            <span class="tb-ic">⋯</span>
+          </div>
+          <div class="browser-body">
+            <div class="shot-left">
+              <div class="sl-title">User groups</div>
+              <div class="fake-group">
+                <div class="fg-head"><span>Sales team</span><span>12 people</span></div>
+                <div class="fg-chips"><span class="fg-chip on">Sales</span><span class="fg-chip">Customer Service</span><span class="fg-chip">Field Service</span></div>
+              </div>
+              <div class="fake-group">
+                <div class="fg-head"><span>Customer service</span><span>8 people</span></div>
+                <div class="fg-chips"><span class="fg-chip">Sales</span><span class="fg-chip on">Customer Service</span><span class="fg-chip">Field Service</span></div>
+              </div>
+              <div class="fake-group">
+                <div class="fg-head"><span>Sales + service hybrid</span><span>3 people</span></div>
+                <div class="fg-chips"><span class="fg-chip on">Sales</span><span class="fg-chip on">Customer Service</span><span class="fg-chip">Field Service</span></div>
+              </div>
+              <div class="fake-group">
+                <div class="fg-head"><span>Managers and report viewers</span><span>10 people · light</span></div>
+                <div class="fg-chips"><span class="fg-chip on">Sales</span><span class="fg-chip on">Customer Service</span></div>
+              </div>
+            </div>
+            <div class="shot-right">
+              <div class="sr-total-lbl">Monthly total</div>
+              <div class="sr-total" id="m-total"></div>
+              <div style="margin-top:10px">
+                <div class="sr-line"><span>12 x Sales Enterprise</span><span class="dots"></span><span class="amt" id="m-l1"></span></div>
+                <div class="sr-line"><span>8 x Customer Service Pro</span><span class="dots"></span><span class="amt" id="m-l2"></span></div>
+                <div class="sr-line"><span>3 x Sales Ent + CS attach</span><span class="dots"></span><span class="amt" id="m-l3"></span></div>
+                <div class="sr-line"><span>10 x Team Member</span><span class="dots"></span><span class="amt" id="m-l4"></span></div>
+              </div>
+              <div class="sr-naive"><span>If everyone had a full license</span><span class="amt" id="m-naive"></span></div>
+              <div class="sr-save">
+                <div class="row"><span>Monthly savings you only see because you asked</span><span class="amt" id="m-save"></span></div>
+                <div class="cap">That's <span id="m-year"></span> a year, compared to full licenses for everyone</div>
+              </div>
+            </div>
+          </div>
+          <div class="taskbar">
+            <div class="tb-start"><i></i><i></i><i></i><i></i></div>
+            <span class="tb-app" style="background:#0078D4"></span>
+            <span class="tb-app" style="background:#107C10"></span>
+            <span class="tb-app" style="background:#FFB900"></span>
+            <span class="tb-app" style="background:#D83B01"></span>
+            <div class="tb-clock">3:00 PM<br>7/16/2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compatibility checks: above the feature cards -->
+  <div class="home-section">
+    <div class="row2">
+      <div class="r-txt">
+        <div class="eyebrow">Compatibility checks</div>
+        <h2>Catch the invalid combination before you buy it</h2>
+        <p>Microsoft's rules are not just prices, they are restrictions too. Professional and Enterprise can't be mixed in the same environment, Team Member can't reach custom apps, and an attach license can't exist without a base.</p>
+        <p>The calculator runs every scenario through those rules. Valid combinations get confirmed, invalid ones get flagged with the reason. The surprise shows up on your screen, not on your invoice.</p>
+        <button class="btn btn-ghost" onclick="goTo('guide')" style="border-color:var(--line-2)">Read the rules</button>
+      </div>
+      <div class="visual-frame vf-blue">
+        <div class="compat-mock">
+          <div class="cm-title">Compatibility checks</div>
+          <div class="cm-item ok"><span class="ic">✓</span><span>Sales Ent (base) + Customer Service (attach) is a valid combination</span></div>
+          <div class="cm-item ok"><span class="ic">✓</span><span>Team Member can coexist with full licenses in the same tenant</span></div>
+          <div class="cm-item warn"><span class="ic">!</span><span>Sales: Professional and Enterprise can't be mixed in the same environment. All full users were counted as Enterprise.</span></div>
+          <div class="cm-item warn"><span class="ic">!</span><span>Team Member can't be assigned to users on custom apps. A full license was calculated instead.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- feature cards -->
+  <div class="home-section">
+    <div class="feat3">
+      <div class="feat">
+        <div class="f-ic"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6l1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></svg></div>
+        <h3>Rule-based, not guesswork</h3>
+        <p>Every recommendation is backed by a rule from Microsoft's official licensing guide, with the reasoning shown right next to it. Where the rules are unclear, the tool doesn't calculate. It says so openly and points you to your partner.</p>
+      </div>
+      <div class="feat">
+        <div class="f-ic"><svg viewBox="0 0 24 24"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 6l-2 12"/></svg></div>
+        <h3>Transparent and open source</h3>
+        <p>The pricing data and the rule set behind the calculator live in a public GitHub repo. Every price shows its last verification date, and anyone who spots an error can submit a fix. No black box.</p>
+      </div>
+      <div class="feat">
+        <div class="f-ic"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 9.5C8 19.2 5 15.5 5 11V6l7-3z"/><path d="M9.5 12l1.8 1.8 3.4-3.6"/></svg></div>
+        <h3>No sign-up, no email</h3>
+        <p>Unlike partner calculators, there is no form to fill in. Open it, calculate, close it. The results go straight to you, not to a sales team's inbox.</p>
+        <h3>Your data never leaves the browser</h3>
+        <p>Everything runs on your device. User counts, scenarios, results, none of it is ever sent to a server.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- photo band -->
+  <div class="photo-band" style="background-image:url('assets/img/band.jpg')">
+    <div class="pb-overlay">
+      <div class="pb-inner">
+        <div class="eyebrow" style="color:#8FCBF5">Who it's for</div>
+        <h2>From the consultant building a quote to the CFO defending the budget</h2>
+        <p>D365 consultants running pre-sales numbers, IT managers with a renewal on the horizon, and finance teams asking "are we paying the right amount". They all have the same question, and now the answer lives in the same place.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- steps + photo -->
+  <div class="home-section">
+    <div class="row2 stretch">
+      <div>
+        <div class="eyebrow">The process</div>
+        <h2>Three steps to a result</h2>
+        <p class="muted" style="margin-bottom:18px">Reading the guide takes hours. These three steps take two minutes.</p>
+        <div class="steps" style="grid-template-columns:1fr">
+          <div class="step" style="padding:18px 22px;display:flex;gap:16px;align-items:flex-start"><div class="s-num" style="margin:0;flex-shrink:0">1</div><div><h3>Model your user inventory</h3><p>Turn your team into role-based groups: headcount, the apps they need, and how deeply they use them, full users who run processes or light users who read and approve. The goal is to translate each role into a profile the licensing rules can understand.</p></div></div>
+          <div class="step" style="padding:18px 22px;display:flex;gap:16px;align-items:flex-start"><div class="s-num" style="margin:0;flex-shrink:0">2</div><div><h3>Let the rules engine process it</h3><p>The engine applies the rule set coded from the official guide: it picks the most expensive app as the base, converts the rest to attach licenses, checks Team Member eligibility against usage depth and custom app criteria, and enforces the Professional / Enterprise mixing ban across the whole environment.</p></div></div>
+          <div class="step" style="padding:18px 22px;display:flex;gap:16px;align-items:flex-start"><div class="s-num" style="margin:0;flex-shrink:0">3</div><div><h3>Get an audited result</h3><p>The output has three layers: a line-by-line cost breakdown per group, a gap analysis against the "full license for everyone" reference scenario, and a compliance report listing every rule that was applied and why. Monthly and yearly savings sit at the bottom.</p></div></div>
+        </div>
+      </div>
+      <div class="photo-card fill"><img src="assets/img/team.jpg" alt="A team working through a licensing scenario" loading="lazy"></div>
+    </div>
+  </div>
+
+  <!-- FAQ + photo -->
+  <div class="home-section">
+    <div class="row2 stretch">
+      <div class="photo-card fill"><img src="assets/img/collab.jpg" alt="A team discussing license planning" loading="lazy"></div>
+      <div>
+        <h2>Frequently asked questions</h2>
+        <div class="faq">
+          <details>
+            <summary>Are the prices up to date?</summary>
+            <p>All pricing data lives in a single public file and is compared against Microsoft's official pricing pages on a regular basis. Every row shows its last verification date. Prices are official list prices in GBP (UK) or USD (global); CSP, EA and regional agreements can differ.</p>
+          </details>
+          <details>
+            <summary>Is this an official Microsoft tool?</summary>
+            <p>No. This tool was built by an independent developer and has no affiliation with Microsoft. The rules are compiled from Microsoft's publicly available licensing guide.</p>
+          </details>
+          <details>
+            <summary>Where does my data go?</summary>
+            <p>Nowhere. The calculation runs entirely in your browser. Nothing you enter is sent to a server, stored or tracked.</p>
+          </details>
+          <details>
+            <summary>Are the results binding?</summary>
+            <p>No. The results are an estimate meant for early-stage planning, not an official quote or licensing advice. Confirm your final decision against the current Microsoft Licensing Guide and with your partner.</p>
+          </details>
+          <details>
+            <summary>Which products are covered?</summary>
+            <p>Version 1 covers Dynamics 365 Sales, Customer Service, Field Service and Team Member licenses. Finance and Supply Chain (F&O) and Business Central are planned for later versions.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-spacer" style="height:26px"></div>
+</section>
+
+<!-- ============ CALCULATOR ============ -->
+<section class="page" id="page-calc">
+  <div class="page-hero">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="ph-inner">
+      <div class="eyebrow">Calculator</div>
+      <h1>Define your user groups and see the most economical mix the rules allow</h1>
+      <p class="ph-lead">Scope (v1): Sales, Customer Service, Field Service and Team Member. Prices are official Microsoft list prices, shown in GBP for the UK by default with a one-click switch to USD. Nothing you enter leaves your browser.</p>
+    </div>
+  </div>
+  <div class="pad">
+
+  <details class="howitworks">
+    <summary>How it works, a short guide</summary>
+    <div class="hw-body">
+      <p><b>1. Split your users into groups.</b> Everyone doing the same job is one group: "12 sales reps", "5 warehouse leads", "10 report viewers". For each group, enter the headcount and tick the apps they need (Sales, Customer Service, Field Service).</p>
+      <p><b>2. Pick a usage profile.</b> If the group creates records and runs processes, choose "full user". If they mostly read data and approve things, choose "light user". Light users can often get by on the <span data-amt="tm"></span> Team Member license, and that is where the biggest savings come from. For full users, tick the box if they need advanced features (forecasting, deep customization, omnichannel), because that decides between the Professional and Enterprise tiers.</p>
+      <p><b>3. Read the result.</b> The receipt on the right shows a line-by-line cost breakdown, a comparison against the "full license for everyone" scenario, and your savings. The green compatibility panel inside the receipt reports how your scenario holds up against Microsoft's rules, line by line: valid combinations get confirmed, invalid picks get flagged with the reason and corrected automatically.</p>
+    </div>
+  </details>
+
+  <div class="calc-grid">
+    <div>
+      <div id="groups"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="addGroup()" style="border-color:var(--line-2)">+ Add group</button>
+        <button class="btn btn-ghost" onclick="loadSample()" style="border-color:var(--line-2)">Load a sample scenario</button>
+      </div>
+    </div>
+
+    <div class="receipt" id="receipt">
+      <div class="receipt-empty">Your breakdown will appear here as you define groups.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:34px">
+    <div class="banner"><img src="assets/img/office.jpg" alt="A team talking through a licensing scenario" loading="lazy" style="object-position:center 30%"><div class="b-cap">Three small tips for an accurate result</div></div>
+    <div class="tips tips-row">
+      <div class="tip">
+        <h3>Group by the work, not the job title</h3>
+        <p>"The sales department" doesn't have to be one group. The same department has people running deals and people who only look at reports. Getting that split right is where the savings live.</p>
+      </div>
+      <div class="tip">
+        <h3>Answer the custom app question honestly</h3>
+        <p>Team Member restrictions are technically enforced by Microsoft. Buying Team Member for someone who works in a custom app is savings on paper and an access problem in real life.</p>
+      </div>
+      <div class="tip">
+        <h3>Treat the result as a starting point, not a quote</h3>
+        <p>These numbers are Microsoft list prices in your selected currency. CSP and EA agreements come with their own discounts, so take the receipt into your partner conversation as a reference.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ GUIDE ============ -->
+<section class="page" id="page-guide">
+  <div class="page-hero">
+    <div class="blob b2"></div><div class="blob b3"></div>
+    <div class="ph-inner">
+      <div class="eyebrow">License Guide</div>
+      <h1>The packages, the restrictions, and the logic behind them</h1>
+      <p class="ph-lead">What each license is, who it fits, and the rules to watch out for. Source: the Microsoft Dynamics 365 Licensing Guide.</p>
+    </div>
+  </div>
+  <div class="pad">
+
+  <div class="guide-grid">
+    <div class="lic-card">
+      <h3>Sales Professional</h3>
+      <div class="l-price"><span data-price="sales.pro"></span> <span>user / month</span></div>
+      <div class="l-for">For teams with straightforward sales processes. The most economical full license when simple pipeline management is enough.</div>
+      <ul>
+        <li><b>Covers:</b> Leads, opportunities, quotes, basic reporting</li>
+        <li class="l-restrict"><b>Restriction:</b> Can't be mixed with Enterprise in the same environment</li>
+        <li class="l-restrict"><b>Restriction:</b> Limited customization (custom entity cap)</li>
+      </ul>
+    </div>
+    <div class="lic-card">
+      <h3>Sales Enterprise</h3>
+      <div class="l-price"><span data-price="sales.ent"></span> <span>user / month</span></div>
+      <div class="l-for">The standard pick for teams with complex sales processes, forecasting needs and heavy customization.</div>
+      <ul>
+        <li><b>Covers:</b> Everything in Pro plus forecasting, Copilot, broad customization</li>
+        <li><b>Advantage:</b> Acts as a qualifying base for attach licenses</li>
+        <li class="l-restrict"><b>Restriction:</b> Can't be mixed with Professional in the same environment</li>
+      </ul>
+    </div>
+    <div class="lic-card">
+      <h3>Customer Service Pro / Enterprise</h3>
+      <div class="l-price"><span data-price="cs.pro"></span> / <span data-price="cs.ent"></span> <span>user / month</span></div>
+      <div class="l-for">For customer service teams. Pro handles simple case management, Enterprise adds omnichannel and advanced scenarios.</div>
+      <ul>
+        <li><b>Covers:</b> Case management, knowledge base, self-service portal</li>
+        <li class="l-restrict"><b>Restriction:</b> Pro and Enterprise can't be mixed in the same environment</li>
+      </ul>
+    </div>
+    <div class="lic-card">
+      <h3>Field Service</h3>
+      <div class="l-price"><span data-price="fs.ent"></span> <span>user / month</span></div>
+      <div class="l-for">For field service teams: work orders, routing, technician management.</div>
+      <ul>
+        <li><b>Covers:</b> Work orders, scheduling, asset management, mobile</li>
+        <li><b>Advantage:</b> Bought as a base, it lets other CE apps come in as attach</li>
+      </ul>
+    </div>
+    <div class="lic-card">
+      <h3>Team Member</h3>
+      <div class="l-price"><span data-amt="tm"></span> <span>user / month</span></div>
+      <div class="l-for">For users who read data, approve records and make light updates. Used correctly, it's the single biggest savings lever.</div>
+      <ul>
+        <li><b>Covers:</b> Read access to all D365 data plus designated light scenarios</li>
+        <li class="l-restrict"><b>Restriction:</b> No access to custom apps</li>
+        <li class="l-restrict"><b>Restriction:</b> The Team Member app can hold at most 15 entities</li>
+        <li class="l-restrict"><b>Restriction:</b> Technically enforced, no wiggle room</li>
+      </ul>
+    </div>
+    <div class="lic-card">
+      <h3>Attach licenses</h3>
+      <div class="l-price"><span data-amt="attach"></span> <span>user / month / app</span></div>
+      <div class="l-for">The discounted model for a user's second and later apps. The most expensive app becomes the base, the rest attach.</div>
+      <ul>
+        <li><b>Rule:</b> Can only be assigned to a user with a qualifying base license</li>
+        <li><b>Example:</b> Sales Ent (base <span data-price="sales.ent"></span>) + Customer Service (attach <span data-amt="attach"></span>) = <span id="ex-total"></span></li>
+        <li class="l-restrict"><b>Restriction:</b> An attach can't be bought on its own without a base</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="article" style="margin-top:44px">
+    <div class="eyebrow">In five minutes</div>
+    <h2>Making sense of licensing logic</h2>
+    <div class="banner"><img src="assets/img/meet.jpg" alt="A team reviewing a licensing scenario" loading="lazy"><div class="b-cap">Four rules explain most of your invoice</div></div>
+    <div class="points-grid">
+      <div class="point"><span class="kicker-num">01</span><b>Base + attach is a discount on the second app</b><p>Microsoft licenses a user's first (most expensive) app at full price. The same user's second and later apps drop to a <span data-amt="attach"></span> attach license per app. For someone doing both sales and customer service, base + attach instead of two full licenses adds up to a serious difference per user per month.</p></div>
+      <div class="point"><span class="kicker-num">02</span><b>Team Member is for light usage, not low usage</b><p>The <span data-amt="tm"></span> Team Member license is designed for reading data, approving records and limited updates. Its limits are clear: at most 15 entities, no access to custom apps, and the restrictions are technically enforced. Assigned to the right user it's the biggest savings item, assigned to the wrong one it's an access incident.</p></div>
+      <div class="point"><span class="kicker-num">03</span><b>Tier choice is environment-wide, not per person</b><p>Professional and Enterprise licenses can't be mixed in the same environment. A single user's need for advanced features decides the tier for every full user of that app. This is the rule that most often slips through budget planning.</p></div>
+      <div class="point"><span class="kicker-num">04</span><b>The rules are getting real</b><p>Microsoft is tightening license assignment. On the Finance &amp; Operations side, every user has needed an explicitly assigned license since November 2025, and non-compliant users are gradually losing access. Correct licensing is now as much about continuity as it is about savings.</p></div>
+    </div>
+  </div>
+
+  <div class="gray-zone">
+    <h2>The gray areas of licensing</h2>
+    <div class="card">
+      <p style="font-size:15px;margin-bottom:10px"><b>This tool doesn't answer every question, and that's a deliberate choice.</b> On the topics below, Microsoft's documentation is open to interpretation. The calculator produces no recommendations here and points you to your partner instead:</p>
+      <ul style="font-size:14.5px;color:var(--ink-soft);padding-left:18px;line-height:1.9">
+        <li><b>Multiplexing:</b> Who needs a license when D365 data flows into other systems (a data warehouse, a portal, a reporting tool) through automated processes. The general rule is strict: anyone who sees the data needs a license, no matter how many systems sit in between. The edge cases are murky.</li>
+        <li><b>Dual-write / CRM-ERP integration:</b> If a user's transaction is written to a second D365 system in the background, dual licensing may be required.</li>
+        <li><b>ISV solutions:</b> Licensing requirements for third-party apps vary by vendor.</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ PRICES ============ -->
+<section class="page" id="page-prices">
+  <div class="page-hero">
+    <div class="blob b1"></div><div class="blob b3"></div>
+    <div class="ph-inner">
+      <div class="eyebrow">Pricing Data</div>
+      <h1>The price table, out in the open</h1>
+      <p class="ph-lead">This is the entire dataset the calculator runs on. It lives in a public JSON file on GitHub, and anyone who spots an error can send a PR.</p>
+    </div>
+  </div>
+  <div class="pad">
+
+  <div class="price-meta">
+    <span class="badge warn">DATA NOT YET VERIFIED</span>
+    <span class="badge plain" id="curBadge"></span>
+    <span class="badge plain">Last checked: -</span>
+  </div>
+
+  <div class="card" style="padding:0;overflow:auto">
+    <table>
+      <thead><tr><th>License</th><th>Type</th><th style="text-align:right">Price (mo)</th><th>Notes</th></tr></thead>
+      <tbody id="priceTable"></tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:18px" class="note note-warn">
+    This table is compared against Microsoft's official pricing page and licensing guide on a regular basis. In the live version, every row will carry its own verification date and change history. Prices are list prices; CSP, EA and regional agreements can differ.
+  </div>
+
+  <div style="margin-top:46px">
+    <div class="eyebrow">Freshness</div>
+    <h2>How the prices stay current</h2>
+    <p class="muted" style="max-width:720px;margin-bottom:20px">Microsoft list prices don't change often, and big changes are announced months ahead. Even so, nothing here is left to chance:</p>
+    <div class="mini-steps">
+      <div class="mini-step">
+        <h3>One source: pricing.json</h3>
+        <p>Every price and rule lives in a single versioned file. Each number you see on this site comes from that file, there are no hidden values.</p>
+      </div>
+      <div class="mini-step">
+        <h3>Monthly verification</h3>
+        <p>The data is checked against Microsoft's official pricing pages every month and the "last checked" date gets updated. If the date goes stale, you'll see it too.</p>
+      </div>
+      <div class="mini-step">
+        <h3>Community contributions</h3>
+        <p>The repo is public. Anyone who spots a price change before I do can send a PR, and an approved fix goes live the same day.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:40px">
+    <div class="eyebrow">Roadmap</div>
+    <h2>What's next?</h2>
+    <div class="banner"><img src="assets/img/skyline.jpg" alt="London" loading="lazy"><div class="b-cap">Built UK-first: GBP list prices by default</div></div>
+    <div class="roadmap" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+      <div class="rm-item">
+        <span class="rm-badge now">V1</span>
+        <div><h3>Customer Engagement + Team Member (GBP + USD)</h3><p>Sales, Customer Service, Field Service, base/attach and Team Member rules. UK list prices by default with a one-click USD switch. The scope you're looking at right now.</p></div>
+      </div>
+      <div class="rm-item">
+        <span class="rm-badge next">V1.5</span>
+        <div><h3>Automated price checks</h3><p>A scheduled GitHub Action that compares this site's pricing data against Microsoft's official pages every month and opens a pull request when something changes.</p></div>
+        <img class="rm-thumb" src="assets/img/bigben.jpg" alt="London" loading="lazy">
+      </div>
+      <div class="rm-item">
+        <span class="rm-badge next">V2</span>
+        <div><h3>Finance &amp; Operations module</h3><p>Finance and Supply Chain licenses, including the 20-license minimum, the Operations Activity tier and Premium options.</p></div>
+      </div>
+      <div class="rm-item">
+        <span class="rm-badge later">V3</span>
+        <div><h3>Business Central</h3><p>With the Essentials / Premium split and the tenant-wide single tier rule.</p></div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="page" id="page-about">
+  <div class="page-hero">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="ph-inner">
+      <div class="eyebrow">About</div>
+      <h1>Why does this tool exist?</h1>
+      <p class="ph-lead">Independent, open source, free. So anyone can see how a license bill gets smaller.</p>
+    </div>
+  </div>
+  <div class="pad">
+
+  <div class="about-hero"><img src="assets/img/about.jpg" alt="A team reviewing licensing numbers" loading="lazy"></div>
+
+  <div class="row2 stretch" style="padding-top:10px">
+    <div class="about-wrap">
+      <p><span class="badge plain">Version: prototype v0.8</span></p>
+      <p>Dynamics 365 licensing is one of the least understood corners of the Microsoft ecosystem. Base and attach relationships, Team Member restrictions, the Professional and Enterprise mixing ban, all of it sits scattered across an official guide. The result: companies either pay for more than they need or run into access problems with non-compliant licenses.</p>
+      <p>This tool turns those rules into an open, free calculator anyone can use. It asks for no sign-up, collects no data and has no sales team behind it. The source code and pricing data are public on GitHub, and bug reports and contributions are open to everyone.</p>
+      <p>It was built by an independent developer and is not affiliated with Microsoft. Where things are unclear it doesn't calculate. It marks the gray areas of licensing openly and points you to your partner. A tool's credibility starts with being able to say what it doesn't know.</p>
+    </div>
+    <div class="photo-card fill"><img src="assets/img/oxford.jpg" alt="Oxford" loading="lazy"></div>
+  </div>
+
+  <div class="about-wrap">
+    <div class="builder">
+      <div class="b-avatar">BÇ</div>
+      <div>
+        <div class="b-name">Built by Baran Çevik</div>
+        <div class="b-role">Dynamics 365 Developer &amp; Multichannel Ecommerce Operations · <a href="https://www.linkedin.com/in/baran-%C3%A7evik-463a0014b/" target="_blank" rel="noopener">LinkedIn</a></div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <h3>Disclaimer</h3>
+      <p>This tool is for information and early-stage planning only. The results are not an official quote, licensing advice or legal opinion.</p>
+      <p>Microsoft's licensing rules and prices can change without notice. Before making final licensing decisions, review the current Microsoft Licensing Guide and confirm with your Microsoft partner.</p>
+      <p>The developer of this tool can't be held responsible for damages arising from decisions based on the information presented here.</p>
+    </div>
+  </div>
+  </div>
+</section>
+
+</main>
+
+<div class="cta-band">
+  <div class="cta-inner">
+    <div>
+      <h2>See the right mix for your team in 2 minutes</h2>
+      <p>No sign-up, no email, no data collection.</p>
+    </div>
+    <button class="btn btn-white" onclick="goTo('calc')">Start calculating</button>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span>D365 License Optimizer is an independent open-source project. Not affiliated with Microsoft.</span>
+    <div class="cur-toggle" role="group" aria-label="Currency">
+      <button data-cur="gbp" onclick="setCurrency('gbp')">UK £</button>
+      <button data-cur="usd" onclick="setCurrency('usd')">Global $</button>
+    </div>
+    <span>Prices are for information only. Confirm your decisions with your partner.</span>
+  </div>
+</footer>
+
+<script src="js/pricing-data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
