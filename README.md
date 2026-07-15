@@ -10,19 +10,19 @@ Live demo: **[barancevik.github.io/Dynamics365LicenseOptimizer](https://barancev
 
 **See the cost of getting it wrong before anything else.** The homepage leads with the number nobody shows you: what a full-license-for-everyone approach overpays per year.
 
-![Homepage: the cost of getting licensing wrong, shown first](docs/screen-home.jpg)
+![Homepage: the cost of getting licensing wrong, shown first](screen-home.jpg)
 
 **Describe your team, read the receipt.** Groups on the left, an audited breakdown on the right: line-by-line costs, the comparison scenario, and a compliance panel explaining every rule that fired.
 
-![Calculator: user groups on the left, audited receipt with compliance checks on the right](docs/screen-calculator.jpg)
+![Calculator: user groups on the left, audited receipt with compliance checks on the right](screen-calculator.jpg)
 
 **The rules, in plain language.** Every license with its price, its fit and its restrictions, plus the four rules that explain most invoices.
 
-![License guide: packages, restrictions and the logic behind them](docs/screen-guide.jpg)
+![License guide: packages, restrictions and the logic behind them](screen-guide.jpg)
 
 **Independent by design.** No affiliation, no sales team, no data collection. Just an open tool that says what it knows and what it doesn't.
 
-![About page: why this tool exists](docs/screen-why.jpg)
+![About page: why this tool exists](screen-why.jpg)
 
 ---
 
